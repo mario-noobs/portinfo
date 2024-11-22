@@ -61,12 +61,11 @@ func GetProcesses() ([]Process, error) {
 	return processes, nil
 }
 
-// ToJSON serializes the list of processes into a JSON string.
+// ToJSON serializes the list of processes into a single-line JSON string.
 func ToJSON(processes []Process) (string, error) {
-	// Marshal the processes slice to JSON.
-	processesJSON, err := json.MarshalIndent(processes, "", "  ")
-	if err != nil {
-		return "", err
-	}
-	return string(processesJSON), nil
+    jsonData, err := json.Marshal(processes)
+    if err != nil {
+        return "", err
+    }
+    return string(jsonData), nil
 }

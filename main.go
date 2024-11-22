@@ -14,9 +14,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println(processes)
-
+	
 	// Convert the processes to JSON
 	jsonData, err := portinfo.ToJSON(processes)
 	if err != nil {
