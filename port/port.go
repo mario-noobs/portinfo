@@ -1,5 +1,3 @@
-// process.go
-
 package portinfo
 
 import (
@@ -28,7 +26,7 @@ func GetProcesses() ([]Process, error) {
 	strStdout := string(out)
 	lines := strings.Split(strStdout, "\n")
 
-	var processes []Process
+	processMap := make(map[string]Process) // Map to store unique processes
 
 	// Iterate through each line of the output.
 	for i, line := range lines {
@@ -46,16 +44,26 @@ func GetProcesses() ([]Process, error) {
 		// Extract relevant information.
 		pid := fields[1]
 		user := fields[2]
-		port := strings.Split(fields[8], ":")[1]
+		port := strings.Split(fields[8], ":")[1] // Extract the port from the address
 		command := fields[0]
 
-		// Append the process to the result list.
-		processes = append(processes, Process{
-			Port:   port,
-			PID:    pid,
-			User:   user,
-			Command: command,
-		})
+		// Use a unique identifier to ensure no duplicates
+		processKey := pid + user + port + command
+		if _, exists := processMap[processKey]; !exists {
+			// Add unique process to map
+			processMap[processKey] = Process{
+				Port:   port,
+				PID:    pid,
+				User:   user,
+				Command: command,
+			}
+		}
+	}
+
+	// Convert map values to a slice
+	var processes []Process
+	for _, p := range processMap {
+		processes = append(processes, p)
 	}
 
 	return processes, nil
